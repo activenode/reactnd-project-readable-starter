@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import './App.css';
 import 'semantic-ui-css/semantic.min.css';
-import { Button } from 'semantic-ui-react'
+import { Button, Icon } from 'semantic-ui-react'
+import { BrowserRouter, Route } from 'react-router-dom';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <Button>
-          Click Here
-        </Button>
-      </div>
+      <BrowserRouter>
+        <div className="App">
+          Hello World
+          <Icon name='home' />
+        </div>
+      </BrowserRouter>
     );
   }
 }
