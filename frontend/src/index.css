@@ -1,9 +1,34 @@
 :root {
   --globaldist: 1.2rem;
+  --maxwidth: 860px;
 }
 
 .App {
   padding: var(--globaldist);
+}
+.App.App--contentlock {
+  overflow: hidden;
+}
+
+.App--maxwidth {
+  width: var(--maxwidth);
+  margin: auto;
+}
+
+.AppWrapper {
+  display:flex;
+}
+
+.AppSidebar, .AppMain {
+  flex:1;
+}
+
+.AppSidebar {
+  flex: 0 0 15rem;
+}
+
+.AppMainContent {
+  padding:0 2rem;
 }
 
 .AppBar {
@@ -13,4 +38,12 @@
   box-shadow:0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: var(--globaldist);
   border-bottom:1px solid #B8B8B8;
+}
+
+.AppModal {
+  position: fixed;
+  top:0; left:0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.9);
 }

@@ -3,54 +3,52 @@ import 'semantic-ui-css/semantic.min.css';
 import '../index.css';
 //import { Grid } from 'semantic-ui-react';
 import { BrowserRouter, Route } from 'react-router-dom';
-import ListPosts from './list_posts';
+import PostNavigator from './post_navigator';
 
 class App extends Component {
-  state = {
-    category: null
-  }
-
   render() {
     return (
       <BrowserRouter>
-        <Route path={"/:category?/:id?/:optionParam?"} render={(props) => {
-          const {
-            match: {
-              params: {category, id, optionParam}
-            }
-          } = props,
+        <Route
+          path={"/:category?/:id?/:optionParam?"}
+          render={(props) => {
+            const {
+              match: {
+                params: {category, id, optionParam}
+              }
+            } = props,
 
-          showForm =
-            category === 'new_post'
-            || id === 'new_post'
-            || (category && id && optionParam === 'edit_post');
+            showFormModal =
+              category === 'new_post'
+              || (id === 'new_post' && !optionParam)
+              || (category && id && optionParam === 'edit_post');
 
-          return (
-            <div className="App">
-              <div className="AppBar">
-                <h1>Readable</h1>
-              </div>
+            return (
+              <div className={`App ${showFormModal ? 'App--contentlock' : ''}`}>
+                <div className="AppBar">
+                  <h1 className="App--maxwidth">Readable</h1>
+                </div>
 
-              <div class="AppSidebar">
-                <ListPosts category={this.category} />
-              </div>
-              <main>
-                foobar!
-
-                <div className="AppModal">
-                    {/**
-                    *  incaseof:
-                        - category/post_id/edit_post
-                        - category/new_post
-                        - /new_post
-                    */}
-
-                    {showForm && <span>cheese</span>}
+                <div className="AppWrapper App--maxwidth">
+                  <div className="AppSidebar">
+                    <PostNavigator
+                      currentCategory={category} />
                   </div>
-              </main>
-            </div>
-            )
-         }} />
+                  <main className="AppMain">
+                    <div className="AppMainContent">
+                      {
+                        (new Array(200).fill(1)).map((_,i)=><p key={i}>fdjladsfj asdfljdsaf ljkafsdkjl</p>)
+                      }
+                    </div>
+                  </main>
+                </div>
+
+                {showFormModal && <div className="AppModal">
+                    <span>cheese</span>
+                </div>}
+              </div>
+              )
+          }} />
       </BrowserRouter>
     );
   }
