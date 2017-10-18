@@ -60,12 +60,14 @@ export default class ListPosts extends Component {
         </Menu.Item>
 
         <Route render={({ match }) => {
-          const { params: { category: firstParam, id: secondParam, url}} = match;
+          const { params: { category: firstParam, id: secondParam}, url} = match;
           const isNewPostMatch = firstParam === NEW_POST || secondParam === NEW_POST;
+          const linkTo = (isNewPostMatch ? '' : url + `/${NEW_POST}`).replace('//','/');
+          console.log('linkto', linkTo);
 
           return (<Menu.Item
             as={Link}
-            to={`${isNewPostMatch ? '' : '' + url}/${NEW_POST}`}
+            to={linkTo}
             name='new_post'
             active={isNewPostMatch}
             onClick={this.handleItemClick}>

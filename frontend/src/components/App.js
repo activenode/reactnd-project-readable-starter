@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import 'semantic-ui-css/semantic.min.css';
 import '../index.css';
-//import { Grid } from 'semantic-ui-react';
 import { BrowserRouter, Route } from 'react-router-dom';
 import PostNavigator from './post_navigator';
+import ListPosts from './list_posts';
 
 class App extends Component {
   render() {
@@ -21,6 +21,7 @@ class App extends Component {
             showFormModal =
               category === 'new_post'
               || (id === 'new_post' && !optionParam)
+              || optionParam === 'new_post'
               || (category && id && optionParam === 'edit_post');
 
             return (
@@ -36,9 +37,9 @@ class App extends Component {
                   </div>
                   <main className="AppMain">
                     <div className="AppMainContent">
-                      {
-                        (new Array(200).fill(1)).map((_,i)=><p key={i}>fdjladsfj asdfljdsaf ljkafsdkjl</p>)
-                      }
+                      <ListPosts
+                        currentCategory={category}
+                        currentPostId={id} />
                     </div>
                   </main>
                 </div>

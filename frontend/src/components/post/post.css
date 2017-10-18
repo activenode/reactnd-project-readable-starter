@@ -1,0 +1,16 @@
+.votesCount {
+  margin-right: 1rem;
+}
+
+.post .thumbs {
+  cursor:pointer;
+}
+
+.post .thumbs:hover {
+  color:rgb(0, 132, 255);
+}
+
+.post .thumbs.disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}

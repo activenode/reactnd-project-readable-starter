@@ -3,6 +3,10 @@
   --maxwidth: 860px;
 }
 
+.no-pointer-events {
+  pointer-events: none;
+}
+
 .App {
   padding: var(--globaldist);
 }
