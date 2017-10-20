@@ -4,16 +4,18 @@ import { Dropdown } from 'semantic-ui-react';
 
 function PostsFilterBar({activeFilter = 'votes_desc'}) {
   const availableFilters = [
-    {label: 'Votes descending', name: 'votes_desc'},
-    {label: 'Votes ascending', name: 'votes_asc'}
+    {label: 'Highest votes on top', name: 'votes_desc'},
+    {label: 'Lowest votes on top', name: 'votes_asc'}
   ];
 
   return (
-    <Dropdown text='Filter' icon='filter' floating labeled button className='icon' style={{marginBottom: '1rem'}}>
+    <Dropdown text={availableFilters.filter(({name}) => name == activeFilter)[0].label} icon='filter' floating labeled button className='icon' style={{marginBottom: '1rem'}}>
       <Dropdown.Menu>
         <Dropdown.Header content='Filter by' />
         {availableFilters.map(filterItem => (
-          <Dropdown.Item key={filterItem.name} style={{fontWeight: filterItem.name === activeFilter ? 'bold' : ''}}>Votes descending</Dropdown.Item>
+          <Dropdown.Item key={filterItem.name} style={{fontWeight: filterItem.name === activeFilter ? 'bold' : ''}}>
+            {filterItem.label}
+          </Dropdown.Item>
         ))}
       </Dropdown.Menu>
     </Dropdown>
