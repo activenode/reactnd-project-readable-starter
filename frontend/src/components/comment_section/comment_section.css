@@ -1,0 +1,9 @@
+/** overwriting default styles of semantic ui **/
+
+.post-comment-action.thumbs.up {
+  margin-left:1rem !important;
+}
+
+.post-comment .post-comment-action.delete:hover {
+  color:red !important;
+}

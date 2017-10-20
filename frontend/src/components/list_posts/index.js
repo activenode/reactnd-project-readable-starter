@@ -22,11 +22,14 @@ const _list = [
   }
 ];
 
-function ListPosts({ currentCategory, currentPostId, list = _list }) {
+function ListPosts({ currentCategory, currentPostId, getDetailViewLink, list = _list }) {
   return (
     <div className="posts">
       {!list && <Message color='yellow'>No posts available</Message>}
       {list && list.map((postItem, key) => {
+        const detailViewLinkPath = getDetailViewLink(postItem);
+        const editViewLinkPath = `${detailViewLinkPath}/edit_post`;
+
         return <Post
           key={key}
           id={postItem.id}
@@ -35,6 +38,8 @@ function ListPosts({ currentCategory, currentPostId, list = _list }) {
           body={postItem.body}
           voteScore={postItem.voteScore}
           category={postItem.category}
+          detailViewLinkPath={detailViewLinkPath}
+          editViewLinkPath={editViewLinkPath}
           isDetailView={postItem.id * 1 === currentPostId * 1 && postItem.category === currentCategory}
           commentsCount={postItem.commentsCount} />
       })}

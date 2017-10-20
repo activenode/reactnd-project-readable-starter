@@ -7,16 +7,19 @@ import './post.css';
 
 class Post extends Component {
   voteUp(e) {
+    //TODO: dispatch voteUp
+    e.preventDefault();
+    alert('this');
+  }
+
+  voteDown(e) {
+    //TODO: dispatch voteDown
     e.preventDefault();
     alert('this');
   }
 
   deletePost(id) {
     alert(id);
-  }
-
-  editPost(id) {
-    alert('edit' + id);
   }
 
   render() {
@@ -27,15 +30,16 @@ class Post extends Component {
       commentsCount,
       isDetailView,
       voteScore,
-      category,
-      body
+      body,
+      detailViewLinkPath,
+      editViewLinkPath
     } = this.props;
-  
+
+    // we want to render the card as link if it is not the detail view
     const renderAs = !isDetailView ? Link : undefined;
-    const linkTo = `/${category}/${id}`;
-  
+
     return (<div className='post'>
-      <Card fluid={true} as={renderAs} to={linkTo}>
+      <Card fluid={true} as={renderAs} to={detailViewLinkPath}>
         <Card.Content header={title} meta={author} />
         {isDetailView && <Card.Content description={body} />}
         <Card.Content extra>
@@ -57,11 +61,11 @@ class Post extends Component {
           </Grid>
         </Card.Content>
         {isDetailView && <Card.Content extra textAlign='right'>
-          <Button size='mini' onClick={()=>this.editPost(id)}>Edit Post</Button>
+          <Button as={Link} to={editViewLinkPath} size='mini'>Edit Post</Button>
           <Button size='mini' negative onClick={()=>this.deletePost(id)}>Delete Post</Button>
         </Card.Content>}
       </Card>
-      {isDetailView && <CommentSection />}
+      {isDetailView && <CommentSection postId={id} />}
     </div>);
   }
 };

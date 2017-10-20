@@ -4,13 +4,20 @@ import '../index.css';
 import { BrowserRouter, Route } from 'react-router-dom';
 import PostNavigator from './post_navigator';
 import ListPosts from './list_posts';
+import PostsFilterBar from './posts_filter_bar';
 
 class App extends Component {
+  getDetailViewLinkForPost({category, id}) {
+    return `/${category}/${id}`;
+  }
+
+  //TODO: implement also failure when a category is chosen that is not available (or in general when route cannot be matched)
+  // could be done by throwing error and having a enclosing error component
   render() {
     return (
       <BrowserRouter>
         <Route
-          path={"/:category?/:id?/:optionParam?"}
+          path={'/:category?/:id?/:optionParam?'}
           render={(props) => {
             const {
               match: {
@@ -37,9 +44,11 @@ class App extends Component {
                   </div>
                   <main className="AppMain">
                     <div className="AppMainContent">
+                      {!id && <PostsFilterBar />}
                       <ListPosts
                         currentCategory={category}
-                        currentPostId={id} />
+                        currentPostId={id}
+                        getDetailViewLink={this.getDetailViewLinkForPost} />
                     </div>
                   </main>
                 </div>
