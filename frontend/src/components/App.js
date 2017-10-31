@@ -4,12 +4,22 @@ import '../index.css';
 import { BrowserRouter, Route } from 'react-router-dom';
 import PostNavigator from './post_navigator';
 import ListPosts from './list_posts';
-import PostsFilterBar from './posts_filter_bar';
+import PostsOrderBar from './posts_filter_bar';
 import PostForm from './post_form';
+
+
+const reduxData = {
+  categories: ['redux', 'udacity', 'react']
+}
+
 
 class App extends Component {
   getDetailViewLinkForPost({category, id}) {
     return `/${category}/${id}`;
+  }
+
+  onChangePostsOrder = (e,f) => {
+    console.log('now change filters',e,'--',f);
   }
 
   //TODO: implement also failure when a category is chosen that is not available (or in general when route cannot be matched)
@@ -23,7 +33,11 @@ class App extends Component {
             const {
               match: {
                 params: {category, id, optionParam}
-              }
+              },
+              location: {
+                pathname
+              },
+              history
             } = props,
 
             newPostRequested =
@@ -44,11 +58,12 @@ class App extends Component {
                 <div className="AppWrapper App--maxwidth">
                   <div className="AppSidebar">
                     <PostNavigator
-                      currentCategory={category} />
+                      currentCategory={category}
+                      categories={reduxData.categories} />
                   </div>
                   <main className="AppMain">
                     <div className="AppMainContent">
-                      {!id && <PostsFilterBar />}
+                      {!id && <PostsOrderBar onChange={this.onChangePostsOrder} />}
                       <ListPosts
                         currentCategory={category}
                         currentPostId={id}
@@ -57,7 +72,23 @@ class App extends Component {
                   </main>
                 </div>
 
-                {showFormModal && <PostForm />}
+                {
+                  showFormModal
+                  && <PostForm
+                      headerTitle={newPostRequested ? 'New post' : 'Edit post'}
+                      categories={reduxData.categories}
+                      presetPostData={{category: 'some', id: null}}
+                      onSave={(data)=>{
+                        console.log('saving', data);
+                        alert('saving data now');
+                      }}
+                      onClose={()=>{
+                        // hint: we are in edit_post or new_post
+                        // so basically removing these parts should be sufficient
+                        history.push(pathname.replace(/\/(new|edit)_post/g,''));
+                      }}
+                      />
+                }
               </div>
               )
           }} />

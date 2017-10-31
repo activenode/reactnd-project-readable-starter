@@ -2,24 +2,24 @@ import React from 'react';
 import { Dropdown } from 'semantic-ui-react';
 
 
-function PostsFilterBar({activeFilter = 'votes_desc'}) {
+function PostsOrderBar({activeFilter = 'votes_desc', onChange}) {
   const availableFilters = [
-    {label: 'Highest votes on top', name: 'votes_desc'},
-    {label: 'Lowest votes on top', name: 'votes_asc'}
+    {text: 'Highest votes on top', key: 'votes_desc', value: 'votes_desc'},
+    {text: 'Lowest votes on top', key: 'votes_asc', value: 'votes_asc'}
   ];
 
   return (
-    <Dropdown text={availableFilters.filter(({name}) => name === activeFilter)[0].label} icon='filter' floating labeled button className='icon' style={{marginBottom: '1rem'}}>
-      <Dropdown.Menu>
-        <Dropdown.Header content='Filter by' />
-        {availableFilters.map(filterItem => (
-          <Dropdown.Item key={filterItem.name} style={{fontWeight: filterItem.name === activeFilter ? 'bold' : ''}}>
-            {filterItem.label}
-          </Dropdown.Item>
-        ))}
-      </Dropdown.Menu>
-    </Dropdown>
+    <div>
+      Order by {' '}
+      <Dropdown
+        inline
+        options={availableFilters}
+        defaultValue='o'
+        onChange={()=>{
+          console.log('k');
+        }} />
+    </div>
   );
 }
 
-export default PostsFilterBar;
+export default PostsOrderBar;

@@ -7,25 +7,8 @@ const NEW_POST = 'new_post';
 const CATG_ALL_POSTS = 'all';
 
 export default class ListPosts extends Component {
-  // only this component needs the categories purely
-  // -> local state
-  state = {
-    categories: ['react', 'udacity', 'redux']
-  }
-
-  getCurrentCategory() {
-    const { currentCategory } = this.props;
-    if (this.state.categories.includes(currentCategory)) {
-      return currentCategory;
-    } else {
-      return CATG_ALL_POSTS;
-    }
-  }
-
-  getMappedCategories() {
-    const currentCategory = this.getCurrentCategory();
-
-    return ['all'].concat(this.state.categories)
+  getMappedCategories(categories, currentCategory) {
+    return ['all'].concat(categories)
       .map(category => {
         return {
           key: category,
@@ -37,6 +20,8 @@ export default class ListPosts extends Component {
   }
 
   render() {
+    const { categories, currentCategory } = this.props;
+
     return (
       <Menu vertical>
         <Menu.Item>
@@ -47,7 +32,7 @@ export default class ListPosts extends Component {
           Categories
 
           <Menu.Menu>
-            {this.getMappedCategories().map(cat => (
+            {this.getMappedCategories(categories, currentCategory).map(cat => (
               <Menu.Item as={Link}
                 to={`/${cat.linkTo}`}
                 name={cat.key}
