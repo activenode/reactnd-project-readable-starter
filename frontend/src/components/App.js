@@ -5,6 +5,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import PostNavigator from './post_navigator';
 import ListPosts from './list_posts';
 import PostsFilterBar from './posts_filter_bar';
+import PostForm from './post_form';
 
 class App extends Component {
   getDetailViewLinkForPost({category, id}) {
@@ -25,10 +26,13 @@ class App extends Component {
               }
             } = props,
 
-            showFormModal =
+            newPostRequested =
               category === 'new_post'
               || (id === 'new_post' && !optionParam)
-              || optionParam === 'new_post'
+              || optionParam === 'new_post',
+
+            showFormModal =
+              newPostRequested
               || (category && id && optionParam === 'edit_post');
 
             return (
@@ -53,9 +57,7 @@ class App extends Component {
                   </main>
                 </div>
 
-                {showFormModal && <div className="AppModal">
-                    <span>cheese</span>
-                </div>}
+                {showFormModal && <PostForm />}
               </div>
               )
           }} />

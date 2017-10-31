@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { Icon, Input, Menu } from 'semantic-ui-react'
+import { Icon, Menu } from 'semantic-ui-react'
 import { Link, Route } from 'react-router-dom';
+import CustomSearch from '../custom_search';
 
 const NEW_POST = 'new_post';
 const CATG_ALL_POSTS = 'all';
@@ -25,21 +26,21 @@ export default class ListPosts extends Component {
     const currentCategory = this.getCurrentCategory();
 
     return ['all'].concat(this.state.categories)
-    .map(category => {
-      return {
-        key: category,
-        label: category,
-        linkTo: category === CATG_ALL_POSTS ? '' : category,
-        isActive: category === currentCategory
-      }
-    });
+      .map(category => {
+        return {
+          key: category,
+          label: category,
+          linkTo: category === CATG_ALL_POSTS ? '' : category,
+          isActive: category === currentCategory
+        }
+      });
   }
 
   render() {
     return (
       <Menu vertical>
         <Menu.Item>
-          <Input placeholder='Search posts...' />
+          <CustomSearch />
         </Menu.Item>
 
         <Menu.Item>
@@ -63,7 +64,6 @@ export default class ListPosts extends Component {
           const { params: { category: firstParam, id: secondParam}, url} = match;
           const isNewPostMatch = firstParam === NEW_POST || secondParam === NEW_POST;
           const linkTo = (isNewPostMatch ? '' : url + `/${NEW_POST}`).replace('//','/');
-          console.log('linkto', linkTo);
 
           return (<Menu.Item
             as={Link}

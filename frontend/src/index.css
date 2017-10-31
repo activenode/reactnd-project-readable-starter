@@ -51,3 +51,7 @@
   height: 100vh;
   background: rgba(255, 255, 255, 0.9);
 }
+
+.ui.search .ui.icon.input input {
+  padding-right:0.673em !important;
+}

@@ -9,7 +9,7 @@ function PostsFilterBar({activeFilter = 'votes_desc'}) {
   ];
 
   return (
-    <Dropdown text={availableFilters.filter(({name}) => name == activeFilter)[0].label} icon='filter' floating labeled button className='icon' style={{marginBottom: '1rem'}}>
+    <Dropdown text={availableFilters.filter(({name}) => name === activeFilter)[0].label} icon='filter' floating labeled button className='icon' style={{marginBottom: '1rem'}}>
       <Dropdown.Menu>
         <Dropdown.Header content='Filter by' />
         {availableFilters.map(filterItem => (
