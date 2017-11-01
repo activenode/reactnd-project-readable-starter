@@ -52,8 +52,26 @@ class PostForm extends Component {
      }
   }
 
+  componentWillMount() {
+    const { presetPostData: post } = this.props;
+
+    this.setState({
+      currentFormData: {
+        author: post.author,
+        title: post.title,
+        body: post.body,
+        category: post.category
+      }
+    })
+  }
+
   render() {
-    const { headerTitle, categories, onSave, onClose } = this.props;
+    const {
+      headerTitle,
+      categories,
+      onSave,
+      onClose
+    } = this.props;
 
     return (
       <Modal
@@ -94,7 +112,8 @@ class PostForm extends Component {
               error={this.state.categoryErrorneous} />
 
             <div style={{marginTop: '1rem'}}>
-              <Button type='submit'>Save post</Button>
+              <Button type='submit' color='green'>Save post</Button>
+              <Button type='button' basic color='red' onClick={onClose}>Cancel</Button>
             </div>
           </Form>
         </Modal.Content>

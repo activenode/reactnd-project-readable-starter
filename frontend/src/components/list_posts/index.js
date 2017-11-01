@@ -30,7 +30,7 @@ const sortPosts = (posts, orderBy) => {
 
 function ListPosts({ orderBy, currentCategory, currentPostId, getDetailViewLink, posts }) {
   const postsToShow = !posts || !currentCategory ? posts : posts.filter(({ category, id }) => {
-    return category === currentCategory && (!currentPostId || currentPostId * 1 === id * 1);
+    return category === currentCategory && (!currentPostId || Number(currentPostId) === Number(id));
   });
 
   return (
@@ -54,7 +54,7 @@ function ListPosts({ orderBy, currentCategory, currentPostId, getDetailViewLink,
             category={postItem.category}
             detailViewLinkPath={detailViewLinkPath}
             editViewLinkPath={editViewLinkPath}
-            isDetailView={postItem.id * 1 === currentPostId * 1 && postItem.category === currentCategory}
+            isDetailView={Number(postItem.id) === Number(currentPostId) && postItem.category === currentCategory}
             commentsCount={postItem.commentsCount} />
         })
       }

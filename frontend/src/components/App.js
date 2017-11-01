@@ -59,6 +59,15 @@ const postOrderValues = [
 postOrderDefaultValue = 'voteScore desc';
 
 
+const fetchPostDataByCatgAndId = (posts, category, id) => {
+  if (!Array.isArray(posts) || !category || !id) {
+    return {}; // plain object so that design for failure is given
+  }
+
+  return posts.find(({ category: pCategory, id: pId }) => pCategory === category && Number(pId) === Number(id)) || {};
+};
+
+
 class App extends Component {
   state = {
     orderPostsBy: postOrderDefaultValue
@@ -72,6 +81,15 @@ class App extends Component {
     this.setState({
       orderPostsBy: orderBy
     });
+  }
+
+  onSavePost = (postData)=>{
+    if (postData.id) {
+      // we are editing
+      alert('dispatch edit_post action');
+    } else {
+      alert('dispatch create_post action');
+    }
   }
 
   //TODO: implement also failure when a category is chosen that is not available (or in general when route cannot be matched)
@@ -135,11 +153,11 @@ class App extends Component {
                   && <PostForm
                       headerTitle={newPostRequested ? 'New post' : 'Edit post'}
                       categories={reduxData.categories}
-                      presetPostData={{category: 'some', id: null}}
-                      onSave={(data)=>{
-                        console.log('saving', data);
-                        alert('saving data now');
-                      }}
+                      presetPostData={Object.assign(
+                        { category },
+                        newPostRequested ? {} : fetchPostDataByCatgAndId(reduxData.posts, category, id)
+                      )}
+                      onSave={this.onSavePost}
                       onClose={()=>{
                         // hint: we are in edit_post or new_post
                         // so basically removing these parts should be sufficient
