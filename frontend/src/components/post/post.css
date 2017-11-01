@@ -1,9 +1,14 @@
-.votesCount {
-  margin-right: 1rem;
+.post + .post {
+  margin-top:1rem;
 }
 
-.post .thumbs {
+.post .voteScore ~ .thumbs {
   cursor:pointer;
+  margin-left:1rem;
+}
+
+.post .voteScore + .thumbs + .thumbs {
+  margin-left:initial;
 }
 
 .post .thumbs:hover {

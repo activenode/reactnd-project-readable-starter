@@ -50,12 +50,12 @@ class Post extends Component {
                 {commentsCount} {commentsCount === 1 ? 'Comment' : 'Comments'}
               </Grid.Column>
               <Grid.Column textAlign='right'>
-                <span className='votesCount'>
+                <span className='voteScore'>
                   <Icon name='star' className="no-pointer-events" />
                   {voteScore} {voteScore === 1 ? 'Vote' : 'Votes'}
                 </span>
-                <Icon name='thumbs up' data-id={id} onClick={e => this.voteUp(e)} />
-                <Icon name='thumbs down' />
+                {isDetailView && <Icon name='thumbs up' onClick={e => this.voteUp(e)} />}
+                {isDetailView &&  <Icon name='thumbs down' onClick={e => this.voteDown(e)} />}
               </Grid.Column>
             </Grid.Row>
           </Grid>

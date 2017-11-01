@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { Icon, Menu } from 'semantic-ui-react'
 import { Link, Route } from 'react-router-dom';
-import CustomSearch from '../custom_search';
+import CustomPostSearch from '../custom_post_search';
 
 const NEW_POST = 'new_post';
 const CATG_ALL_POSTS = 'all';
 
-export default class ListPosts extends Component {
+export default class PostNavigator extends Component {
   getMappedCategories(categories, currentCategory) {
     return ['all'].concat(categories)
       .map(category => {
@@ -20,12 +20,12 @@ export default class ListPosts extends Component {
   }
 
   render() {
-    const { categories, currentCategory } = this.props;
+    const { categories, currentCategory, posts } = this.props;
 
     return (
       <Menu vertical>
         <Menu.Item>
-          <CustomSearch />
+          <CustomPostSearch posts={posts} />
         </Menu.Item>
 
         <Menu.Item>
