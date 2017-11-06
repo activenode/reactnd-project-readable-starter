@@ -37,7 +37,7 @@ class CustomPostSearch extends Component {
         }
       }))
     });
-  }, 250);
+  }, 150);
 
   componentWillMount() {
     this.setState({

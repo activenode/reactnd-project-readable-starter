@@ -6,20 +6,18 @@ import './post.css';
 
 
 class Post extends Component {
-  voteUp(e) {
+  voteUp = (e) => {
     //TODO: dispatch voteUp
+    const { id, onVote } = this.props;
     e.preventDefault();
-    alert('this');
+    onVote('post', 'up', id);
   }
 
-  voteDown(e) {
+  voteDown = (e) => {
     //TODO: dispatch voteDown
+    const { id, onVote } = this.props;
     e.preventDefault();
-    alert('this');
-  }
-
-  deletePost(id) {
-    alert(id);
+    onVote('post', 'down', id);
   }
 
   render() {
@@ -27,12 +25,16 @@ class Post extends Component {
       id,
       title,
       author,
-      commentsCount,
       isDetailView,
       voteScore,
       body,
       detailViewLinkPath,
-      editViewLinkPath
+      editViewLinkPath,
+      comments,
+      onDelete,
+      onSaveComment,
+      onDeleteComment,
+      onVote
     } = this.props;
 
     // we want to render the card as link if it is not the detail view
@@ -47,25 +49,33 @@ class Post extends Component {
             <Grid.Row>
               <Grid.Column>
                 <Icon name='comments' />
-                {commentsCount} {commentsCount === 1 ? 'Comment' : 'Comments'}
+                {comments.length} {comments.length === 1 ? 'Comment' : 'Comments'}
               </Grid.Column>
               <Grid.Column textAlign='right'>
                 <span className='voteScore'>
                   <Icon name='star' className="no-pointer-events" />
-                  {voteScore} {voteScore === 1 ? 'Vote' : 'Votes'}
+                  { voteScore } { voteScore === 1 ? 'Vote' : 'Votes' }
                 </span>
-                {isDetailView && <Icon name='thumbs up' onClick={e => this.voteUp(e)} />}
-                {isDetailView &&  <Icon name='thumbs down' onClick={e => this.voteDown(e)} />}
+                { isDetailView && <Icon name='thumbs up' onClick={ this.voteUp } />}
+                { isDetailView &&  <Icon name='thumbs down' onClick={ this.voteDown } />}
               </Grid.Column>
             </Grid.Row>
           </Grid>
         </Card.Content>
-        {isDetailView && <Card.Content extra textAlign='right'>
-          <Button as={Link} to={editViewLinkPath} size='mini'>Edit Post</Button>
-          <Button size='mini' negative onClick={()=>this.deletePost(id)}>Delete Post</Button>
+        { isDetailView && <Card.Content extra textAlign='right'>
+          <Button as={ Link } to={ editViewLinkPath } size='mini'>Edit Post</Button>
+          <Button size='mini' negative onClick={ ()=>onDelete(id) }>Delete Post</Button>
         </Card.Content>}
       </Card>
-      {isDetailView && <CommentSection postId={id} />}
+
+      {
+        isDetailView
+        && <CommentSection
+            comments={ comments }
+            onSave={ onSaveComment }
+            onDelete={ onDeleteComment }
+            onVote={ onVote } />
+      }
     </div>);
   }
 };

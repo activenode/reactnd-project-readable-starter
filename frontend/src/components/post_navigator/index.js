@@ -20,12 +20,12 @@ export default class PostNavigator extends Component {
   }
 
   render() {
-    const { categories, currentCategory, posts } = this.props;
+    const { categories, currentCategory, searchablePosts } = this.props;
 
     return (
       <Menu vertical>
         <Menu.Item>
-          <CustomPostSearch posts={posts} />
+          <CustomPostSearch posts={searchablePosts} />
         </Menu.Item>
 
         <Menu.Item>

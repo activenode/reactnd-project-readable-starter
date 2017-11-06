@@ -6,37 +6,72 @@ import PostNavigator from './post_navigator';
 import ListPosts from './list_posts';
 import PostsOrderBar from './posts_order_bar';
 import PostForm from './post_form';
-
+import { HOUR_DURATION_MS } from '../utils/time';
 
 const body = [
   'Amy 2 is a violinist with 2 years experience in the wedding industry.',
   'She enjoys the outdoors and currently resides in upstate New York.',
 ].join(' ');
 
-const reduxData = {
+const reduxDispatchers = {
+  onSavePost: (postData) => {
+    alert('trying to save a post' + JSON.stringify(postData));
+  },
+  onDeletePost: (postData) => {
+    alert('trying to delete a post' + JSON.stringify(postData));
+  },
+  onDeleteComment: (commentData) => {
+    alert('(call onEditCommntrying to delete a comment' + JSON.stringify(commentData));
+  },
+  onSaveComment: (commentVoteData) => {
+    alert('trying to add a comment' + JSON.stringify(commentVoteData));
+  },
+  /**
+   * modelType: post | comment
+   * voteType: up | down
+   */
+  onVote: (modelType, voteType, id) => {
+    alert('vote me '+  modelType + ':' + voteType + id);
+  }
+};
+
+const reduxStateData = {
   categories: ['redux', 'udacity', 'react'],
   posts: [
     {
       id: 1,
       timestamp: Date.now(),
-      commentsCount: 4,
       title: 'List Entry Title 1',
       author: 'John Doe',
       category: 'redux',
       voteScore: 5,
       deleted: false,
-      body: body
+      body: body,
+
+      comments: [ //this is then enhanced by mapStateToProps
+        {
+          id: 20,
+          parentId: 1,
+          timestamp: Date.now() - HOUR_DURATION_MS * 48, //1469479767190
+          body: 'Comments. Are. Cool.',
+          author: 'thingone',
+          voteScore: -5,
+          deleted: false,
+          parentDeleted: false
+        }
+      ]
     },
     {
       id: 2,
       timestamp: Date.now(),
-      commentsCount: 4,
       title: 'List Entry Title 2 (less votes)',
       author: 'John Doe',
       category: 'udacity',
       voteScore: 3,
       deleted: false,
-      body: body
+      body: body,
+
+      comments: []
     },
     {
       id: 3,
@@ -47,7 +82,9 @@ const reduxData = {
       category: 'udacity',
       voteScore: 10,
       deleted: false,
-      body: body
+      body: body,
+
+      comments: []
     }
   ]
 };
@@ -58,14 +95,23 @@ const postOrderValues = [
 ],
 postOrderDefaultValue = 'voteScore desc';
 
+/**
+ * Will search for the post inside of the `.posts` that is identified by `id` and `category`
+ * Although id is already unique we make sure we do not match ids in the wrong category (design for failure)
+ * @param {Object} params - Object in the form of {posts, category, id, Boolean(newPostRequested)}
+ */
+const fetchPostData = ({ posts, category, id, newPostRequested }) => {
+  const fallback = { category };
 
-const fetchPostDataByCatgAndId = (posts, category, id) => {
-  if (!Array.isArray(posts) || !category || !id) {
-    return {}; // plain object so that design for failure is given
+  if (!newPostRequested && Array.isArray(posts) && category && id) {
+    return posts.find(({ category: pCategory, id: pId }) => {
+      return pCategory === category && Number(pId) === Number(id);
+    }) || fallback;
   }
 
-  return posts.find(({ category: pCategory, id: pId }) => pCategory === category && Number(pId) === Number(id)) || {};
+  return fallback;
 };
+
 
 
 class App extends Component {
@@ -81,15 +127,6 @@ class App extends Component {
     this.setState({
       orderPostsBy: orderBy
     });
-  }
-
-  onSavePost = (postData)=>{
-    if (postData.id) {
-      // we are editing
-      alert('dispatch edit_post action');
-    } else {
-      alert('dispatch create_post action');
-    }
   }
 
   //TODO: implement also failure when a category is chosen that is not available (or in general when route cannot be matched)
@@ -129,8 +166,8 @@ class App extends Component {
                   <div className="AppSidebar">
                     <PostNavigator
                       currentCategory={category}
-                      categories={reduxData.categories}
-                      posts={reduxData.posts} />
+                      categories={reduxStateData.categories}
+                      searchablePosts={reduxStateData.posts} />
                   </div>
                   <main className="AppMain">
                     <div className="AppMainContent">
@@ -141,8 +178,12 @@ class App extends Component {
                       <ListPosts
                         currentCategory={category}
                         currentPostId={id}
-                        posts={reduxData.posts}
+                        posts={reduxStateData.posts}
                         orderBy={this.state.orderPostsBy}
+                        onVote={reduxDispatchers.onVote}
+                        onDeletePost={reduxDispatchers.onDeletePost}
+                        onSaveComment={reduxDispatchers.onSaveComment}
+                        onDeleteComment={reduxDispatchers.onDeleteComment}
                         getDetailViewLink={this.getDetailViewLinkForPost} />
                     </div>
                   </main>
@@ -152,12 +193,9 @@ class App extends Component {
                   showFormModal
                   && <PostForm
                       headerTitle={newPostRequested ? 'New post' : 'Edit post'}
-                      categories={reduxData.categories}
-                      presetPostData={Object.assign(
-                        { category },
-                        newPostRequested ? {} : fetchPostDataByCatgAndId(reduxData.posts, category, id)
-                      )}
-                      onSave={this.onSavePost}
+                      categories={reduxStateData.categories}
+                      presetPostData={ fetchPostData({ posts: reduxStateData.posts, id, category, newPostRequested }) }
+                      onSave={reduxDispatchers.onSavePost}
                       onClose={()=>{
                         // hint: we are in edit_post or new_post
                         // so basically removing these parts should be sufficient

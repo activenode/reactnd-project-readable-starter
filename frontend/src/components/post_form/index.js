@@ -18,8 +18,25 @@ class PostForm extends Component {
       body: '',
       category: ''
     }
+  };
+
+  componentWillMount() {
+    const { presetPostData: post } = this.props;
+
+    this.setState({
+      currentFormData: {
+        author: post.author,
+        title: post.title,
+        body: post.body,
+        category: post.category,
+        id: post.id
+      }
+    });
   }
 
+  /**
+   * Function to set the state of a controlled form input
+   */
   handleFormFieldChange = (e, {name, value}) => {
     const currentFormData = this.state.currentFormData;
 
@@ -37,6 +54,10 @@ class PostForm extends Component {
     }
   }
 
+  /**
+   * Will validate some data and then execute the provided function with the form data as param
+   * @param {Function} funcToExecuteWithData
+   */
   validateAndExecute(funcToExecuteWithData) {
     /**
      * ok so assuming everything worked then we need to check the category
@@ -50,19 +71,6 @@ class PostForm extends Component {
      } else if (funcToExecuteWithData) {
        funcToExecuteWithData(this.state.currentFormData);
      }
-  }
-
-  componentWillMount() {
-    const { presetPostData: post } = this.props;
-
-    this.setState({
-      currentFormData: {
-        author: post.author,
-        title: post.title,
-        body: post.body,
-        category: post.category
-      }
-    })
   }
 
   render() {

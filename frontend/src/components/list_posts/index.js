@@ -28,7 +28,17 @@ const sortPosts = (posts, orderBy) => {
   });
 };
 
-function ListPosts({ orderBy, currentCategory, currentPostId, getDetailViewLink, posts }) {
+function ListPosts({
+  orderBy,
+  currentCategory,
+  currentPostId,
+  getDetailViewLink,
+  posts,
+  onSaveComment,
+  onDeletePost,
+  onDeleteComment,
+  onVote
+}) {
   const postsToShow = !posts || !currentCategory ? posts : posts.filter(({ category, id }) => {
     return category === currentCategory && (!currentPostId || Number(currentPostId) === Number(id));
   });
@@ -40,6 +50,7 @@ function ListPosts({ orderBy, currentCategory, currentPostId, getDetailViewLink,
         postsToShow
         && !!postsToShow.length
         && sortPosts(postsToShow, orderBy)
+        .filter(({ deleted }) => deleted !== true)
         .map((postItem, key) => {
           const detailViewLinkPath = getDetailViewLink(postItem);
           const editViewLinkPath = `${detailViewLinkPath}/edit_post`;
@@ -55,7 +66,14 @@ function ListPosts({ orderBy, currentCategory, currentPostId, getDetailViewLink,
             detailViewLinkPath={detailViewLinkPath}
             editViewLinkPath={editViewLinkPath}
             isDetailView={Number(postItem.id) === Number(currentPostId) && postItem.category === currentCategory}
-            commentsCount={postItem.commentsCount} />
+            onDelete={ onDeletePost }
+            onSaveComment={ data => {
+              //now enriching the comment data with the post data
+              onSaveComment(Object.assign({}, data, {parentId: postItem.id}))
+            }}
+            onDeleteComment={ onDeleteComment }
+            onVote={ onVote }
+            comments={postItem.comments} />
         })
       }
     </div>
