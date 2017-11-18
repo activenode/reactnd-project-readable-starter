@@ -1,6 +1,5 @@
 import React from 'react';
 import Post from '../post';
-import './list_posts.css';
 import { Message } from 'semantic-ui-react';
 
 const sortPosts = (posts, orderBy) => {

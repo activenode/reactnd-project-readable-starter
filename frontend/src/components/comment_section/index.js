@@ -8,16 +8,32 @@ class CommentSection extends Component {
     commentFormData: {
       author: '',
       body: ''
+    },
+    inlineCommentEdit: {
+      id: null,
+      author: '',
+      body: ''
     }
   };
 
   componentWillMount() {
-    this.resetState();
+    this.resetFormState();
+    this.resetInlineEditState();
   }
 
-  resetState() {
+  resetFormState() {
     this.setState({
       commentFormData: {
+        author: '',
+        body: ''
+      }
+    });
+  }
+
+  resetInlineEditState() {
+    this.setState({
+      inlineCommentEdit: {
+        id: null,
         author: '',
         body: ''
       }
@@ -27,7 +43,23 @@ class CommentSection extends Component {
   addComment = (onAddCommentFunc) => {
     const { author, body } = this.state.commentFormData;
     onAddCommentFunc({ author, body });
-    this.resetState();
+    this.resetFormState();
+  }
+
+  initInlineEdit = ({id, author, body}) => {
+    this.setState({
+      inlineCommentEdit: {
+        id,
+        author,
+        body
+      }
+    });
+  }
+
+  saveInlineEdit = () => {
+    const { onSave } = this.props;
+    onSave(this.state.inlineCommentEdit);
+    this.resetInlineEditState();
   }
 
   voteUp = (e, commentId) => {
@@ -62,7 +94,6 @@ class CommentSection extends Component {
     const {
       comments,
       onSave,
-      onVote,
       onDelete
     } = this.props;
 
@@ -70,20 +101,50 @@ class CommentSection extends Component {
       <Comment.Group>
         <Header as='h3' dividing>Comments</Header>
         {comments && comments.map(comment => {
+          const isInEditMode = this.state.inlineCommentEdit.id === comment.id;
+          let voteState = 'neutral';
+          if (comment.voteScore > 0) {
+            voteState = 'positive';
+          } else if (comment.voteScore < 0) {
+            voteState = 'negative';
+          }
           return (
-            <Comment key={comment.id} className='post-comment'>
-              <Comment.Content>
-                <Comment.Author>{comment.author}</Comment.Author>
-                <Comment.Metadata>
-                  {metadataTimestampToString(comment.timestamp)}
-                </Comment.Metadata>
-                <Comment.Text>{comment.body}</Comment.Text>
-                <Comment.Actions>
-                  <Comment.Action className='post-comment-action delete' onClick={ () => onDelete(comment.id) }>Delete Post</Comment.Action>
-                  <Comment.Action className='post-comment-action thumbs up' onClick={ e => this.voteUp(e, comment.id) }><Icon name='thumbs up' /> </Comment.Action>
-                  <Comment.Action className='post-comment-action thumbs down' onClick={ e => this.voteDown(e, comment.id) }><Icon name='thumbs down' /> </Comment.Action>
-                </Comment.Actions>
-              </Comment.Content>
+            <Comment key={comment.id} className={`post-comment ${isInEditMode ? 'inline-edit' : ''}`}>
+              <Form onSubmit={() => this.saveInlineEdit()}>
+                <Comment.Content>
+                  <Comment.Author>
+                    {
+                      !isInEditMode ?
+                      comment.author :
+                      <Form.Input size='mini' name='author' required value={ comment.author } />
+                    }
+                  </Comment.Author>
+                  {!isInEditMode && <Comment.Metadata>{metadataTimestampToString(comment.timestamp)}</Comment.Metadata>}
+                  <Comment.Text>
+                    {
+                      !isInEditMode ?
+                      comment.body :
+                      <Form.TextArea name='body' required value={ comment.body } />
+                    }
+                  </Comment.Text>
+                  <Comment.Actions>
+                    <Comment.Action className='post-comment-action delete' onClick={ () => onDelete(comment.id) }>Delete</Comment.Action>
+                    {!isInEditMode && <Comment.Action className='post-comment-action edit' onClick={ () => this.initInlineEdit(comment) }>Edit</Comment.Action>}
+                    {isInEditMode &&
+                      <span>
+                        [<Comment.Action className='post-comment-action save' onClick={ () => this.saveInlineEdit() }>Save</Comment.Action>
+                        <Comment.Action className='post-comment-action cancel' onClick={ () => this.resetInlineEditState() }>Cancel</Comment.Action>]
+                      </span>
+                    }
+                    {!isInEditMode && <Comment.Action className='post-comment-action thumbs up' onClick={ e => this.voteUp(e, comment.id) }><Icon name='thumbs up' /> </Comment.Action>}
+                    {!isInEditMode && <Comment.Action className='post-comment-action thumbs down' onClick={ e => this.voteDown(e, comment.id) }><Icon name='thumbs down' /> </Comment.Action>}
+                    {!isInEditMode && <span className={`voteScore voteScore--${voteState}`}>
+                      <Icon name='star' className="no-pointer-events" />
+                      { comment.voteScore }
+                    </span>}
+                  </Comment.Actions>
+                </Comment.Content>
+              </Form>
             </Comment>
           );
         })}

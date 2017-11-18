@@ -7,3 +7,32 @@
 .post-comment .post-comment-action.delete:hover {
   color:red !important;
 }
+
+.comment.post-comment.inline-edit {
+  padding:1rem;
+}
+
+.comment.post-comment.inline-edit input[type='text'],
+.comment.post-comment.inline-edit textarea {
+  border:0;
+  border-left:3px solid rgb(255, 102, 0);
+  border-radius: 0;
+  background-color: rgba(248, 248, 248, 0.925);
+}
+
+.comment.post-comment.inline-edit textarea {
+  font-size:80%;
+}
+
+.comment.post-comment .voteScore {
+  padding:3px 5px;
+  background: grey;
+  border-radius: 2px;
+  color:white;
+}
+.comment.post-comment .voteScore.voteScore--negative {
+  background: rgba(207, 28, 28, 0.767);
+}
+.comment.post-comment .voteScore.voteScore--positive {
+  background: rgba(8, 190, 53, 0.877);
+}
