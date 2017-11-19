@@ -17,11 +17,17 @@ class PostForm extends Component {
       title: '',
       body: '',
       category: ''
-   }
- };
+    }
+  };
 
-  componentWillMount() {
-    const {presetPostData: post} = this.props;
+  setStateToGivenPropState = () => {
+    const {
+      presetPostData: post
+    } = this.props;
+
+    if (!post.title) {
+      return; //to avoid setting "undefined" values and getting "uncontrolled" error
+    }
 
     this.setState({
       currentFormData: {
@@ -30,9 +36,19 @@ class PostForm extends Component {
         body: post.body,
         category: post.category,
         id: post.id
-     }
-   });
- }
+      }
+    });
+  }
+
+  componentWillMount() {
+    this.setStateToGivenPropState();
+  }
+
+  componentWillUpdate(props) {
+    if (props.presetPostData.title && !this.state.currentFormData.title) {
+      this.setStateToGivenPropState();
+    }
+  }
 
   /**
    * Function to set the state of a controlled form input
@@ -44,15 +60,15 @@ class PostForm extends Component {
       currentFormData: {
         ...currentFormData,
         [name]: value
-     }
-   });
+      }
+    });
 
     if (name === 'category' && value) {
       this.setState({
         categoryErrorneous: false
-     });
-   }
- }
+      });
+    }
+  }
 
   /**
    * Will validate some data and then execute the provided function with the form data as param
@@ -63,15 +79,14 @@ class PostForm extends Component {
      * ok so assuming everything worked then we need to check the category
      * as this is not automatically checked
      */
-
-     if (!this.state.currentFormData.category) {
-       this.setState({
-         categoryErrorneous: true
+    if (!this.state.currentFormData.category) {
+      this.setState({
+        categoryErrorneous: true
       });
     } else if (funcToExecuteWithData) {
-       funcToExecuteWithData(this.state.currentFormData);
+      funcToExecuteWithData(this.state.currentFormData);
     }
- }
+  }
 
   render() {
     const {

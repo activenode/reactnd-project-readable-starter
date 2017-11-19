@@ -1,6 +1,7 @@
 import {
   UPDATE_COMMENTS,
-  EDIT_COMMENT
+  EDIT_COMMENT,
+  ADD_COMMENT
 } from './actions';
 
 import removeActionType from '../../utils/removeActionType';
@@ -10,7 +11,7 @@ function commentsReducer(comments = [], action) {
 
   switch (action.type) {
     case UPDATE_COMMENTS:
-      //we only need comment data in detail view so it is safe to overwrite
+      //we only need comment data in detail view so it is safe to overwrite#
       return action.comments;
     case EDIT_COMMENT:
       return comments.map(comment => {
@@ -23,6 +24,8 @@ function commentsReducer(comments = [], action) {
           return { ...comment };
         }
       });
+    case ADD_COMMENT:
+      return comments.concat([action.comment]);
     default:
       return comments;
   }

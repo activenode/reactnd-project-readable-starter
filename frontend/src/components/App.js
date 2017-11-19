@@ -9,17 +9,46 @@ import PostForm from './post_form';
 //import {HOUR_DURATION_MS} from '../utils/time';
 import {connect} from 'react-redux'
 import {fetchCategories} from './categories/actions';
-import {addComment, editComment, deleteComment, upvoteComment, downvoteComment, fetchCommentsFromPost} from './comment_section/actions';
-import {addPost, editPost, deletePost, upvotePost, downvotePost, fetchPosts} from './post/actions';
+import {
+  addComment,
+  editComment,
+  deleteComment,
+  upvoteComment,
+  downvoteComment,
+  fetchCommentsFromPost
+} from './comment_section/actions';
+import {
+  addPost,
+  editPost,
+  deletePost,
+  upvotePost,
+  downvotePost,
+  fetchPosts
+} from './post/actions';
 
 
-const postOrderValues = [
-  {text: 'Highest votes on top', key: 'voteScore desc', value: 'voteScore desc'},
-  {text: 'Lowest votes on top', key: 'voteScore asc', value: 'voteScore asc'},
-  {text: 'Newest first', key: 'timestamp desc', value: 'timestamp desc'},
-  {text: 'Oldest first', key: 'timestamp asc', value: 'timestamp asc'},
-],
-postOrderDefaultValue = 'voteScore desc';
+const postOrderValues = [{
+      text: 'Highest votes on top',
+      key: 'voteScore desc',
+      value: 'voteScore desc'
+    },
+    {
+      text: 'Lowest votes on top',
+      key: 'voteScore asc',
+      value: 'voteScore asc'
+    },
+    {
+      text: 'Newest first',
+      key: 'timestamp desc',
+      value: 'timestamp desc'
+    },
+    {
+      text: 'Oldest first',
+      key: 'timestamp asc',
+      value: 'timestamp asc'
+    },
+  ],
+  postOrderDefaultValue = 'voteScore desc';
 
 /**
  * Will search for the post inside of the `.posts` that is identified by `id` and `category`
@@ -27,15 +56,16 @@ postOrderDefaultValue = 'voteScore desc';
  * @param {Object} params - Object in the form of {posts, category, id, Boolean(newPostRequested)}
  */
 const fetchPostData = ({posts, category, id, newPostRequested}) => {
-  const fallback = {category};
-
+  let result;
   if (!newPostRequested && Array.isArray(posts) && category && id) {
-    return posts.find(({category: pCategory, id: pId}) => {
-      return pCategory === category && Number(pId) === Number(id);
-   }) || fallback;
- }
+    result = posts.find(({category: pCategory, id: pId}) => {
+      return pCategory === category && pId === id;
+    });
+  }
 
-  return fallback;
+  result = result || {category};
+
+  return result;
 };
 
 
@@ -43,27 +73,28 @@ const fetchPostData = ({posts, category, id, newPostRequested}) => {
 class App extends Component {
   state = {
     orderPostsBy: postOrderDefaultValue
- }
+  }
 
-  getDetailViewLinkForPost({category, id}) {
+  getDetailViewLinkForPost({
+    category,
+    id
+  }) {
     return `/${category}/${id}`;
- }
+  }
 
   onChangePostsOrder = (orderBy) => {
     this.setState({
       orderPostsBy: orderBy
-   });
- }
+    });
+  }
 
   componentWillMount() {
     this.props.fetchCategories();
     this.props.fetchPosts();
     // we need all posts as the search needs all posts
     // endpoint does not support searching right now!
- }
+  }
 
-  //TODO: implement also failure when a category is chosen that is not available (or in general when route cannot be matched)
-  // could be done by throwing error and having a enclosing error component
   render() {
     return (
       <BrowserRouter>
@@ -145,9 +176,12 @@ class App extends Component {
  }
 }
 
-//TODO: when using redux: only select the NON-deleted data (comments and posts !)
 
-function mapStateToProps({categories, posts, comments}) {
+function mapStateToProps({
+  categories,
+  posts,
+  comments
+}) {
   // categories Array<String>
   // posts Array<Post>
   // comments Array<Comment>
@@ -156,21 +190,23 @@ function mapStateToProps({categories, posts, comments}) {
   // -> we dont want to process posts
   const mappedPosts =
     (!categories || categories.length === 0) ? [] :
-      posts
-      .filter(({deleted}) => deleted === false)
-      .map(post => {
-      console.log('mapping post', post, comments);
+    posts
+    .filter(({deleted}) => deleted === false)
+    .map(post => {
       return {
         ...post,
-        comments: comments.filter(({parentId, deleted}) => deleted === false && String(parentId) === String(post.id))
-     };
-   }); 
+        comments: comments.filter(({
+          parentId,
+          deleted
+        }) => deleted === false && parentId === post.id)
+      };
+    });
 
-  //TODO: if categories still empty, then dont map posts! does not make sense!
+
   return {
     categories,
     posts: mappedPosts
- }; //only return the same as with redux mapped data above!
+  }; //only return the same as with redux mapped data above!
 }
 
 function mapDispatchToProps(dispatch) {
@@ -183,12 +219,12 @@ function mapDispatchToProps(dispatch) {
       let action;
       if (data.id) {
         action = editComment(data);
-     } else {
+      } else {
         action = addComment(data);
-     }
+      }
 
       return dispatch(action);
-   },
+    },
 
     deleteComment: id => dispatch(deleteComment(id)),
 
@@ -196,12 +232,12 @@ function mapDispatchToProps(dispatch) {
       let action;
       if (data.id) {
         action = editPost(data);
-     } else {
+      } else {
         action = addPost(data);
-     }
+      }
 
       return dispatch(action);
-   },
+    },
 
     deletePost: id => dispatch(deletePost(id)),
 
@@ -216,20 +252,20 @@ function mapDispatchToProps(dispatch) {
       if (modelType === 'post') {
         if (voteType === 'up') {
           action = upvotePost(id);
-       } else {
+        } else {
           action = downvotePost(id);
-       }
-     } else {
+        }
+      } else {
         if (voteType === 'up') {
           action = upvoteComment(id);
-       } else {
+        } else {
           action = downvoteComment(id);
-       }
-     }
+        }
+      }
 
       return dispatch(action);
-   }
- };
+    }
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

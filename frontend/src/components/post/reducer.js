@@ -1,10 +1,21 @@
-import {
-  ADD_POST,
-  EDIT_POST,
-  DELETE_POST,
-  UPDATE_POSTS
-} from './actions';
+import {ADD_POST, EDIT_POST, DELETE_POST, UPDATE_POSTS} from './actions';
+import {INCREMENT_COMMENTS, DECREMENT_COMMENTS} from '../comment_section/actions';
 import removeActionType from '../../utils/removeActionType';
+
+
+function decrementCommentCount(postObj) {
+  return {
+    ...postObj,
+    commentCount: postObj.commentCount - 1
+  };
+}
+
+function incrementCommentCount(postObj) {
+  return {
+    ...postObj,
+    commentCount: postObj.commentCount + 1
+  };
+}
 
 function postsReducer(state = [], action) {
   const payload = removeActionType(action);
@@ -12,6 +23,20 @@ function postsReducer(state = [], action) {
   switch (action.type) {
     case UPDATE_POSTS:
       return action.posts;
+    case INCREMENT_COMMENTS:
+      return state.map(post => {
+        if (post.id === action.postId) {
+          return incrementCommentCount(post);
+        }
+        return post;
+      });
+    case DECREMENT_COMMENTS:
+      return state.map(post => {
+        if (post.id === action.postId) {
+          return decrementCommentCount(post);
+        }
+        return post;
+      });
     case EDIT_POST:
       return state.map(post => {
         if (post.id === action.id) {

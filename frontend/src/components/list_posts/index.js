@@ -40,7 +40,7 @@ function ListPosts({
   fetchCommentsFromPost
 }) {
   const postsToShow = !posts || !currentCategory ? posts : posts.filter(({category, id}) => {
-    return category === currentCategory && (!currentPostId || String(currentPostId) === String(id));
+    return category === currentCategory && (!currentPostId || currentPostId === id);
   });
 
   return (
@@ -66,7 +66,7 @@ function ListPosts({
             detailViewLinkPath={detailViewLinkPath}
             editViewLinkPath={editViewLinkPath}
             fetchCommentsFromPost={fetchCommentsFromPost}
-            isDetailView={String(postItem.id) === String(currentPostId) && postItem.category === currentCategory}
+            isDetailView={postItem.id === currentPostId && postItem.category === currentCategory}
             onDelete={onDeletePost}
             onSaveComment={data => {
               //now enriching the comment data with the post data

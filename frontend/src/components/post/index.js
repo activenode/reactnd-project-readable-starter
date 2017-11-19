@@ -34,7 +34,6 @@ class Post extends Component {
     if (this.props.id !== props.id || props.isDetailView !== this.props.isDetailView) {
       this.loadCommentsIfNeeded(props);
     }
-    console.log('--', props);
   }
 
   componentWillMount = () => {

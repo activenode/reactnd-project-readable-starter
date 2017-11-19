@@ -11,10 +11,9 @@ class CommentSection extends Component {
    },
     inlineCommentEdit: {
       id: null,
-      author: '',
       body: ''
    }
- };
+  };
 
   componentWillMount() {
     this.resetFormState();
@@ -28,29 +27,27 @@ class CommentSection extends Component {
         body: ''
      }
    });
- }
+  }
 
   resetInlineEditState() {
     this.setState({
       inlineCommentEdit: {
         id: null,
-        author: '',
         body: ''
      }
    });
- }
+  }
 
   addComment = (onAddCommentFunc) => {
     const {author, body} = this.state.commentFormData;
     onAddCommentFunc({author, body});
     this.resetFormState();
- }
+  }
 
-  initInlineEdit = ({id, author, body}) => {
+  initInlineEdit = ({id, body}) => {
     this.setState({
       inlineCommentEdit: {
         id,
-        author,
         body
      }
    });
@@ -60,19 +57,19 @@ class CommentSection extends Component {
     const {onSave} = this.props;
     onSave(this.state.inlineCommentEdit);
     this.resetInlineEditState();
- }
+  }
 
   voteUp = (e, commentId) => {
     const {onVote} = this.props;
     e.preventDefault();
     onVote('comment', 'up', commentId);
- }
+  }
 
   voteDown = (e, commentId) => {
     const {onVote} = this.props;
     e.preventDefault();
     onVote('comment', 'down', commentId);
- }
+  }
 
   /**
    * Function to set the state of a controlled form input
@@ -86,7 +83,18 @@ class CommentSection extends Component {
         [name]: value
      }
    });
- }
+  }
+
+  handleCommentEditFieldChange = (e, {name, value}) => {
+    const inlineCommentEdit = this.state.inlineCommentEdit;
+
+    this.setState({
+      inlineCommentEdit: {
+        ...inlineCommentEdit,
+        [name]: value
+     }
+    });
+  }
 
   render() {
     const {
@@ -111,18 +119,18 @@ class CommentSection extends Component {
               <Form onSubmit={() => this.saveInlineEdit()}>
                 <Comment.Content>
                   <Comment.Author>
-                    {
-                      !isInEditMode ?
-                      comment.author :
-                      <Form.Input size='mini' name='author' required value={comment.author} />
-                   }
+                    {comment.author}
                   </Comment.Author>
                   {!isInEditMode && <Comment.Metadata>{metadataTimestampToString(comment.timestamp)}</Comment.Metadata>}
                   <Comment.Text>
                     {
                       !isInEditMode ?
                       comment.body :
-                      <Form.TextArea name='body' required value={comment.body} />
+                      <Form.TextArea
+                        onChange={this.handleCommentEditFieldChange}
+                        name='body'
+                        required
+                        value={this.state.inlineCommentEdit.body} />
                    }
                   </Comment.Text>
                   <Comment.Actions>
