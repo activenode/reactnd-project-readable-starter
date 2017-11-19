@@ -4,7 +4,6 @@ function categoriesReducer(state=[], action) {
   switch (action.type) {
     case UPDATE_CATEGORIES:
       return action.categories.map(({name}) => name); //simplified
-      break;
     default:
       return state;
   }

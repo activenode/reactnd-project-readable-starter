@@ -27,6 +27,7 @@ class Post extends Component {
       author,
       isDetailView,
       voteScore,
+      commentCount,
       body,
       detailViewLinkPath,
       editViewLinkPath,
@@ -49,7 +50,7 @@ class Post extends Component {
             <Grid.Row>
               <Grid.Column>
                 <Icon name='comments' />
-                {comments.length} {comments.length === 1 ? 'Comment' : 'Comments'}
+                {commentCount} {commentCount === 1 ? 'Comment' : 'Comments'}
               </Grid.Column>
               <Grid.Column textAlign='right'>
                 <span className='voteScore'>

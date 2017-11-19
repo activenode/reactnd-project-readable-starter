@@ -8,7 +8,6 @@ import {
 } from './actions';
 
 function postsReducer(state = [], action) {
-  return state;
   console.log('postsReducer called', state, action);
   switch (action.type) {
     case UPDATE_POSTS:

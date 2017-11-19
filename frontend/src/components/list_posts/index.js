@@ -39,7 +39,7 @@ function ListPosts({
   onVote
 }) {
   const postsToShow = !posts || !currentCategory ? posts : posts.filter(({ category, id }) => {
-    return category === currentCategory && (!currentPostId || Number(currentPostId) === Number(id));
+    return category === currentCategory && (!currentPostId || String(currentPostId) === String(id));
   });
 
   return (
@@ -64,7 +64,7 @@ function ListPosts({
             category={postItem.category}
             detailViewLinkPath={detailViewLinkPath}
             editViewLinkPath={editViewLinkPath}
-            isDetailView={Number(postItem.id) === Number(currentPostId) && postItem.category === currentCategory}
+            isDetailView={String(postItem.id) === String(currentPostId) && postItem.category === currentCategory}
             onDelete={ onDeletePost }
             onSaveComment={ data => {
               //now enriching the comment data with the post data
@@ -72,7 +72,8 @@ function ListPosts({
             }}
             onDeleteComment={ onDeleteComment }
             onVote={ onVote }
-            comments={postItem.comments} />
+            comments={postItem.comments}
+            commentCount={postItem.commentCount} />
         })
       }
     </div>
