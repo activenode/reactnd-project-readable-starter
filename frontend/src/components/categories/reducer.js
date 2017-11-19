@@ -1,4 +1,4 @@
-import { UPDATE_CATEGORIES } from './actions';
+import {UPDATE_CATEGORIES} from './actions';
 
 function categoriesReducer(state=[], action) {
   switch (action.type) {
@@ -6,7 +6,7 @@ function categoriesReducer(state=[], action) {
       return action.categories.map(({name}) => name); //simplified
     default:
       return state;
-  }
+ }
 }
 
 export default categoriesReducer;

@@ -25,10 +25,10 @@ export function metadataTimestampToString(timestamp) {
   if (daysBetween > 30) {
     const [day, month, year] = [parsedDate.getDay(), parsedDate.getMonth(), parsedDate.getFullYear()];
     return `${year}, ${day}${day === 1 ? 'st' : 'th'} of ${MONTHS[month]}`;
-  } else {
+ } else {
     const hoursBetween = Math.floor(timeBetween / HOUR_DURATION_MS);
     return (daysBetween <= 1) ?
       (hoursBetween <= 2) ? 'Less than 2 hours ago' : `${hoursBetween} hours ago` :
       `${daysBetween} days ago`;
-  }
+ }
 }

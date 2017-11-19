@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import { Icon, Menu } from 'semantic-ui-react'
-import { Link, Route } from 'react-router-dom';
+import React, {Component} from 'react'
+import {Icon, Menu} from 'semantic-ui-react'
+import {Link, Route} from 'react-router-dom';
 import CustomPostSearch from '../custom_post_search';
 
 const NEW_POST = 'new_post';
@@ -15,12 +15,12 @@ export default class PostNavigator extends Component {
           label: category,
           linkTo: category === CATG_ALL_POSTS ? '' : category,
           isActive: category === currentCategory
-        }
-      });
-  }
+       }
+     });
+ }
 
   render() {
-    const { categories, currentCategory, searchablePosts } = this.props;
+    const {categories, currentCategory, searchablePosts} = this.props;
 
     return (
       <Menu vertical>
@@ -45,8 +45,8 @@ export default class PostNavigator extends Component {
           </Menu.Menu>
         </Menu.Item>
 
-        <Route render={({ match }) => {
-          const { params: { category: firstParam, id: secondParam}, url} = match;
+        <Route render={({match}) => {
+          const {params: {category: firstParam, id: secondParam}, url} = match;
           const isNewPostMatch = firstParam === NEW_POST || secondParam === NEW_POST;
           const linkTo = (isNewPostMatch ? '' : url + `/${NEW_POST}`).replace('//','/');
 
@@ -59,8 +59,8 @@ export default class PostNavigator extends Component {
             <Icon name='plus square outline' />
             New Post
           </Menu.Item>)
-        }} />
+       }} />
       </Menu>
     )
-  }
+ }
 }

@@ -1,23 +1,44 @@
-import React, { Component } from 'react';
-import { Card, Icon, Grid, Button } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
+import React, {Component} from 'react';
+import {Card, Icon, Grid, Button} from 'semantic-ui-react';
+import {Link} from 'react-router-dom';
 import CommentSection from '../comment_section';
 import './post.css';
 
 
 class Post extends Component {
   voteUp = (e) => {
-    //TODO: dispatch voteUp
-    const { id, onVote } = this.props;
+    const {id, onVote} = this.props;
     e.preventDefault();
     onVote('post', 'up', id);
-  }
+ }
 
   voteDown = (e) => {
-    //TODO: dispatch voteDown
-    const { id, onVote } = this.props;
+    const {
+      id,
+      onVote
+    } = this.props;
     e.preventDefault();
     onVote('post', 'down', id);
+  }
+
+  loadCommentsIfNeeded({
+    id,
+    isDetailView
+  }) {
+    if (isDetailView) {
+      this.props.fetchCommentsFromPost(id);
+    }
+  }
+
+  componentWillReceiveProps = (props) => {
+    if (this.props.id !== props.id || props.isDetailView !== this.props.isDetailView) {
+      this.loadCommentsIfNeeded(props);
+    }
+    console.log('--', props);
+  }
+
+  componentWillMount = () => {
+    this.loadCommentsIfNeeded(this.props);
   }
 
   render() {
@@ -36,7 +57,7 @@ class Post extends Component {
       onSaveComment,
       onDeleteComment,
       onVote
-    } = this.props;
+   } = this.props;
 
     // we want to render the card as link if it is not the detail view
     const renderAs = !isDetailView ? Link : undefined;
@@ -55,30 +76,30 @@ class Post extends Component {
               <Grid.Column textAlign='right'>
                 <span className='voteScore'>
                   <Icon name='star' className="no-pointer-events" />
-                  { voteScore } { voteScore === 1 ? 'Vote' : 'Votes' }
+                  {voteScore} {voteScore === 1 ? 'Vote' : 'Votes'}
                 </span>
-                { isDetailView && <Icon name='thumbs up' onClick={ this.voteUp } />}
-                { isDetailView &&  <Icon name='thumbs down' onClick={ this.voteDown } />}
+                {isDetailView && <Icon name='thumbs up' onClick={this.voteUp} />}
+                {isDetailView &&  <Icon name='thumbs down' onClick={this.voteDown} />}
               </Grid.Column>
             </Grid.Row>
           </Grid>
         </Card.Content>
-        { isDetailView && <Card.Content extra textAlign='right'>
-          <Button as={ Link } to={ editViewLinkPath } size='mini'>Edit Post</Button>
-          <Button size='mini' negative onClick={ ()=>onDelete(id) }>Delete Post</Button>
+        {isDetailView && <Card.Content extra textAlign='right'>
+          <Button as={Link} to={editViewLinkPath} size='mini'>Edit Post</Button>
+          <Button size='mini' negative onClick={()=>onDelete(id)}>Delete Post</Button>
         </Card.Content>}
       </Card>
 
       {
         isDetailView
         && <CommentSection
-            comments={ comments }
-            onSave={ onSaveComment }
-            onDelete={ onDeleteComment }
-            onVote={ onVote } />
+            comments={comments}
+            onSave={onSaveComment}
+            onDelete={onDeleteComment}
+            onVote={onVote} />
       }
     </div>);
-  }
+ }
 };
 
 export default Post;

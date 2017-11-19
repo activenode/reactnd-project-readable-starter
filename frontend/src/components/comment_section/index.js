@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { Button, Comment, Form, Header, Icon } from 'semantic-ui-react';
-import { metadataTimestampToString } from '../../utils/time';
+import React, {Component} from 'react';
+import {Button, Comment, Form, Header, Icon} from 'semantic-ui-react';
+import {metadataTimestampToString} from '../../utils/time';
 import './comment_section.css';
 
 class CommentSection extends Component {
@@ -8,27 +8,27 @@ class CommentSection extends Component {
     commentFormData: {
       author: '',
       body: ''
-    },
+   },
     inlineCommentEdit: {
       id: null,
       author: '',
       body: ''
-    }
-  };
+   }
+ };
 
   componentWillMount() {
     this.resetFormState();
     this.resetInlineEditState();
-  }
+ }
 
   resetFormState() {
     this.setState({
       commentFormData: {
         author: '',
         body: ''
-      }
-    });
-  }
+     }
+   });
+ }
 
   resetInlineEditState() {
     this.setState({
@@ -36,15 +36,15 @@ class CommentSection extends Component {
         id: null,
         author: '',
         body: ''
-      }
-    });
-  }
+     }
+   });
+ }
 
   addComment = (onAddCommentFunc) => {
-    const { author, body } = this.state.commentFormData;
-    onAddCommentFunc({ author, body });
+    const {author, body} = this.state.commentFormData;
+    onAddCommentFunc({author, body});
     this.resetFormState();
-  }
+ }
 
   initInlineEdit = ({id, author, body}) => {
     this.setState({
@@ -52,50 +52,48 @@ class CommentSection extends Component {
         id,
         author,
         body
-      }
-    });
-  }
+     }
+   });
+ }
 
   saveInlineEdit = () => {
-    const { onSave } = this.props;
+    const {onSave} = this.props;
     onSave(this.state.inlineCommentEdit);
     this.resetInlineEditState();
-  }
+ }
 
   voteUp = (e, commentId) => {
-    //TODO: dispatch voteUp
-    const { onVote } = this.props;
+    const {onVote} = this.props;
     e.preventDefault();
     onVote('comment', 'up', commentId);
-  }
+ }
 
   voteDown = (e, commentId) => {
-    //TODO: dispatch voteDown
-    const { onVote } = this.props;
+    const {onVote} = this.props;
     e.preventDefault();
     onVote('comment', 'down', commentId);
-  }
+ }
 
   /**
    * Function to set the state of a controlled form input
    */
-  handleFormFieldChange = (e, { name, value }) => {
+  handleFormFieldChange = (e, {name, value}) => {
     const commentFormData = this.state.commentFormData;
 
     this.setState({
       commentFormData: {
         ...commentFormData,
         [name]: value
-      }
-    });
-  }
+     }
+   });
+ }
 
   render() {
     const {
       comments,
       onSave,
       onDelete
-    } = this.props;
+   } = this.props;
 
     return (
       <Comment.Group>
@@ -105,9 +103,9 @@ class CommentSection extends Component {
           let voteState = 'neutral';
           if (comment.voteScore > 0) {
             voteState = 'positive';
-          } else if (comment.voteScore < 0) {
+         } else if (comment.voteScore < 0) {
             voteState = 'negative';
-          }
+         }
           return (
             <Comment key={comment.id} className={`post-comment ${isInEditMode ? 'inline-edit' : ''}`}>
               <Form onSubmit={() => this.saveInlineEdit()}>
@@ -116,48 +114,48 @@ class CommentSection extends Component {
                     {
                       !isInEditMode ?
                       comment.author :
-                      <Form.Input size='mini' name='author' required value={ comment.author } />
-                    }
+                      <Form.Input size='mini' name='author' required value={comment.author} />
+                   }
                   </Comment.Author>
                   {!isInEditMode && <Comment.Metadata>{metadataTimestampToString(comment.timestamp)}</Comment.Metadata>}
                   <Comment.Text>
                     {
                       !isInEditMode ?
                       comment.body :
-                      <Form.TextArea name='body' required value={ comment.body } />
-                    }
+                      <Form.TextArea name='body' required value={comment.body} />
+                   }
                   </Comment.Text>
                   <Comment.Actions>
-                    <Comment.Action className='post-comment-action delete' onClick={ () => onDelete(comment.id) }>Delete</Comment.Action>
-                    {!isInEditMode && <Comment.Action className='post-comment-action edit' onClick={ () => this.initInlineEdit(comment) }>Edit</Comment.Action>}
+                    <Comment.Action className='post-comment-action delete' onClick={() => onDelete(comment.id)}>Delete</Comment.Action>
+                    {!isInEditMode && <Comment.Action className='post-comment-action edit' onClick={() => this.initInlineEdit(comment)}>Edit</Comment.Action>}
                     {isInEditMode &&
                       <span>
-                        [<Comment.Action className='post-comment-action save' onClick={ () => this.saveInlineEdit() }>Save</Comment.Action>
-                        <Comment.Action className='post-comment-action cancel' onClick={ () => this.resetInlineEditState() }>Cancel</Comment.Action>]
+                        [<Comment.Action className='post-comment-action save' onClick={() => this.saveInlineEdit()}>Save</Comment.Action>
+                        <Comment.Action className='post-comment-action cancel' onClick={() => this.resetInlineEditState()}>Cancel</Comment.Action>]
                       </span>
-                    }
-                    {!isInEditMode && <Comment.Action className='post-comment-action thumbs up' onClick={ e => this.voteUp(e, comment.id) }><Icon name='thumbs up' /> </Comment.Action>}
-                    {!isInEditMode && <Comment.Action className='post-comment-action thumbs down' onClick={ e => this.voteDown(e, comment.id) }><Icon name='thumbs down' /> </Comment.Action>}
+                   }
+                    {!isInEditMode && <Comment.Action className='post-comment-action thumbs up' onClick={e => this.voteUp(e, comment.id)}><Icon name='thumbs up' /> </Comment.Action>}
+                    {!isInEditMode && <Comment.Action className='post-comment-action thumbs down' onClick={e => this.voteDown(e, comment.id)}><Icon name='thumbs down' /> </Comment.Action>}
                     {!isInEditMode && <span className={`voteScore voteScore--${voteState}`}>
                       <Icon name='star' className="no-pointer-events" />
-                      { comment.voteScore }
+                      {comment.voteScore}
                     </span>}
                   </Comment.Actions>
                 </Comment.Content>
               </Form>
             </Comment>
           );
-        })}
+       })}
 
         <Form reply onSubmit={() => this.addComment(onSave)}>
           <p><strong>Leave a comment</strong></p>
-          <Form.Input onChange={ this.handleFormFieldChange } placeholder='Your name' name='author' required value={ this.state.commentFormData.author } />
-          <Form.TextArea onChange={ this.handleFormFieldChange } placeholder='Your comment' name='body' value={ this.state.commentFormData.body } required />
+          <Form.Input onChange={this.handleFormFieldChange} placeholder='Your name' name='author' required value={this.state.commentFormData.author} />
+          <Form.TextArea onChange={this.handleFormFieldChange} placeholder='Your comment' name='body' value={this.state.commentFormData.body} required />
           <Button content='Add Comment' labelPosition='left' icon='edit' primary />
         </Form>
       </Comment.Group>
     );
-  }
+ }
 }
 
 export default CommentSection;

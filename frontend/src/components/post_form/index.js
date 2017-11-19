@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Modal, Form, Button } from 'semantic-ui-react';
+import React, {Component} from 'react';
+import {Modal, Form, Button} from 'semantic-ui-react';
 
 const notLocked = true;
 const isOpen = true;
@@ -17,11 +17,11 @@ class PostForm extends Component {
       title: '',
       body: '',
       category: ''
-    }
-  };
+   }
+ };
 
   componentWillMount() {
-    const { presetPostData: post } = this.props;
+    const {presetPostData: post} = this.props;
 
     this.setState({
       currentFormData: {
@@ -30,9 +30,9 @@ class PostForm extends Component {
         body: post.body,
         category: post.category,
         id: post.id
-      }
-    });
-  }
+     }
+   });
+ }
 
   /**
    * Function to set the state of a controlled form input
@@ -44,15 +44,15 @@ class PostForm extends Component {
       currentFormData: {
         ...currentFormData,
         [name]: value
-      }
-    });
+     }
+   });
 
     if (name === 'category' && value) {
       this.setState({
         categoryErrorneous: false
-      });
-    }
-  }
+     });
+   }
+ }
 
   /**
    * Will validate some data and then execute the provided function with the form data as param
@@ -67,11 +67,11 @@ class PostForm extends Component {
      if (!this.state.currentFormData.category) {
        this.setState({
          categoryErrorneous: true
-       });
-     } else if (funcToExecuteWithData) {
+      });
+    } else if (funcToExecuteWithData) {
        funcToExecuteWithData(this.state.currentFormData);
-     }
-  }
+    }
+ }
 
   render() {
     const {
@@ -79,7 +79,7 @@ class PostForm extends Component {
       categories,
       onSave,
       onClose
-    } = this.props;
+   } = this.props;
 
     return (
       <Modal
@@ -127,7 +127,7 @@ class PostForm extends Component {
         </Modal.Content>
       </Modal>
     );
-  }
+ }
 };
 
 export default PostForm;
