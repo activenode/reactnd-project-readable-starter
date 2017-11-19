@@ -3,6 +3,7 @@ export const EDIT_COMMENT = 'EDIT_COMMENT';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
 export const UPVOTE_COMMENT = 'UPVOTE_COMMENT';
 export const DOWNVOTE_COMMENT = 'DOWNVOTE_COMMENT';
+export const FETCH_COMMENTS = 'FETCH_COMMENTS';
 
 export function addComment({ author, title, body, category }) {
   return {
@@ -23,23 +24,29 @@ export function editComment({ id, author, body}) {
   };
 }
 
-export function deleteComment({ id }) {
+export function deleteComment(id) {
   return {
     type: EDIT_COMMENT,
     id
   };
 }
 
-export function upvoteComment({ id }) {
+export function upvoteComment(id) {
   return {
     type: UPVOTE_COMMENT,
     id
   };
 }
 
-export function downvoteComment({ id }) {
+export function downvoteComment(id) {
   return {
     type: DOWNVOTE_COMMENT,
     id
+  };
+}
+
+export function fetchComments() {
+  return {
+    type: FETCH_COMMENTS
   };
 }

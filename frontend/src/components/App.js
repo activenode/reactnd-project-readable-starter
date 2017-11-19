@@ -6,8 +6,13 @@ import PostNavigator from './post_navigator';
 import ListPosts from './list_posts';
 import PostsOrderBar from './posts_order_bar';
 import PostForm from './post_form';
-import { HOUR_DURATION_MS } from '../utils/time';
+//import { HOUR_DURATION_MS } from '../utils/time';
+import { connect } from 'react-redux'
+import { fetchCategories } from './categories/actions';
+import { addComment, editComment, deleteComment, upvoteComment, downvoteComment } from './comment_section/actions';
+import { addPost, editPost, deletePost, upvotePost, downvotePost, fetchPosts } from './post/actions';
 
+/*
 const body = [
   'Amy 2 is a violinist with 2 years experience in the wedding industry.',
   'She enjoys the outdoors and currently resides in upstate New York.',
@@ -26,16 +31,16 @@ const reduxDispatchers = {
   onSaveComment: (commentVoteData) => {
     alert('trying to add a comment' + JSON.stringify(commentVoteData));
   },
-  /**
+  /- *-*
    * modelType: post | comment
    * voteType: up | down
-   */
+   -*-/
   onVote: (modelType, voteType, id) => {
     alert('vote me '+  modelType + ':' + voteType + id);
   }
 };
 
-const reduxStateData = {
+const this.props = {
   categories: ['redux', 'udacity', 'react'],
   posts: [
     {
@@ -87,7 +92,7 @@ const reduxStateData = {
       comments: []
     }
   ]
-};
+};*/
 
 const postOrderValues = [
   {text: 'Highest votes on top', key: 'voteScore desc', value: 'voteScore desc'},
@@ -129,6 +134,13 @@ class App extends Component {
     });
   }
 
+  componentWillMount() {
+    this.props.fetchCategories();
+    this.props.fetchPosts();
+    // we need all posts as the search needs all posts
+    // endpoint does not support searching right now!
+  }
+
   //TODO: implement also failure when a category is chosen that is not available (or in general when route cannot be matched)
   // could be done by throwing error and having a enclosing error component
   render() {
@@ -166,8 +178,8 @@ class App extends Component {
                   <div className="AppSidebar">
                     <PostNavigator
                       currentCategory={category}
-                      categories={reduxStateData.categories}
-                      searchablePosts={reduxStateData.posts} />
+                      categories={this.props.categories}
+                      searchablePosts={this.props.posts} />
                   </div>
                   <main className="AppMain">
                     <div className="AppMainContent">
@@ -178,12 +190,12 @@ class App extends Component {
                       <ListPosts
                         currentCategory={category}
                         currentPostId={id}
-                        posts={reduxStateData.posts}
+                        posts={this.props.posts}
                         orderBy={this.state.orderPostsBy}
-                        onVote={reduxDispatchers.onVote}
-                        onDeletePost={reduxDispatchers.onDeletePost}
-                        onSaveComment={reduxDispatchers.onSaveComment}
-                        onDeleteComment={reduxDispatchers.onDeleteComment}
+                        onVote={this.props.onVote}
+                        onDeletePost={this.props.deletePost}
+                        onSaveComment={this.props.saveComment}
+                        onDeleteComment={this.props.deleteComment}
                         getDetailViewLink={this.getDetailViewLinkForPost} />
                     </div>
                   </main>
@@ -193,9 +205,9 @@ class App extends Component {
                   showFormModal
                   && <PostForm
                       headerTitle={newPostRequested ? 'New post' : 'Edit post'}
-                      categories={reduxStateData.categories}
-                      presetPostData={ fetchPostData({ posts: reduxStateData.posts, id, category, newPostRequested }) }
-                      onSave={reduxDispatchers.onSavePost}
+                      categories={this.props.categories}
+                      presetPostData={ fetchPostData({ posts: this.props.posts, id, category, newPostRequested }) }
+                      onSave={this.props.savePost}
                       onClose={()=>{
                         // hint: we are in edit_post or new_post
                         // so basically removing these parts should be sufficient
@@ -213,4 +225,69 @@ class App extends Component {
 
 //TODO: when using redux: only select the NON-deleted data (comments and posts !)
 
-export default App;
+function mapStateToProps({ categories, posts, comments }) {
+  //console.log('cats1', categories, posts, comments);
+
+  //TODO: if categories still empty, then dont map posts! does not make sense!
+  return { categories, posts, comments }; //only return the same as with redux mapped data above!
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchCategories: () => dispatch(fetchCategories()),
+    fetchPosts: () => dispatch(fetchPosts()),
+
+    saveComment: data => {
+      let action;
+      if (data.id) {
+        action = editComment(data);
+      } else {
+        action = addComment(data);
+      }
+
+      return dispatch(action);
+    },
+
+    deleteComment: id => dispatch(deleteComment(id)),
+
+    savePost: data => {
+      let action;
+      if (data.id) {
+        action = editPost(data);
+      } else {
+        action = addPost(data);
+      }
+
+      return dispatch(action);
+    },
+
+    deletePost: id => dispatch(deletePost(id)),
+
+    /**
+     * onVote is a generic dispatcher which resolves which specific vote action to call
+     * @param {String} modelType - post | comment
+     * @param {String} voteType - up | down
+     * @param {String|Number} id - the id reference
+     */
+    onVote: (modelType, voteType, id) => {
+      let action;
+      if (modelType === 'post') {
+        if (voteType === 'up') {
+          action = upvotePost(id);
+        } else {
+          action = downvotePost(id);
+        }
+      } else {
+        if (voteType === 'up') {
+          action = upvoteComment(id);
+        } else {
+          action = downvoteComment(id);
+        }
+      }
+
+      return dispatch(action);
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
