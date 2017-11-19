@@ -56,7 +56,7 @@ function ListPosts({
           const editViewLinkPath = `${detailViewLinkPath}/edit_post`;
 
           return <Post
-            key={key}
+            key={postItem.id}
             id={postItem.id}
             author={postItem.author}
             title={postItem.title}

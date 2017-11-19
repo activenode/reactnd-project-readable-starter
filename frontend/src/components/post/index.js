@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Card, Icon, Grid, Button} from 'semantic-ui-react';
 import {Link} from 'react-router-dom';
 import CommentSection from '../comment_section';
+import history from '../../utils/history';
 import './post.css';
 
 
@@ -77,16 +78,22 @@ class Post extends Component {
                   <Icon name='star' className="no-pointer-events" />
                   {voteScore} {voteScore === 1 ? 'Vote' : 'Votes'}
                 </span>
-                {isDetailView && <Icon name='thumbs up' onClick={this.voteUp} />}
-                {isDetailView &&  <Icon name='thumbs down' onClick={this.voteDown} />}
+                <Icon name='thumbs up' onClick={this.voteUp} />
+                <Icon name='thumbs down' onClick={this.voteDown} />
               </Grid.Column>
             </Grid.Row>
           </Grid>
         </Card.Content>
-        {isDetailView && <Card.Content extra textAlign='right'>
-          <Button as={Link} to={editViewLinkPath} size='mini'>Edit Post</Button>
-          <Button size='mini' negative onClick={()=>onDelete(id)}>Delete Post</Button>
-        </Card.Content>}
+        <Card.Content extra textAlign='right'>
+          <Button onClick={(e)=>{
+            e.preventDefault();
+            history.push(editViewLinkPath);
+          }} size='mini'>Edit Post</Button>
+          <Button size='mini' negative onClick={(e)=>{
+            e.preventDefault();
+            onDelete(id);
+          }}>Delete Post</Button>
+        </Card.Content>
       </Card>
 
       {

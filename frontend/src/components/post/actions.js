@@ -1,37 +1,69 @@
 import {request} from '../../utils/api';
+import history from '../../utils/history';
+import uuid from 'uuid';
 
 export const ADD_POST = 'ADD_POST';
 export const EDIT_POST = 'EDIT_POST';
-export const DELETE_POST = 'DELETE_POST';
 export const FETCH_POSTS = 'FETCH_POSTS';
 export const UPDATE_POSTS = 'UPDATE_POSTS';
 
-export function addPost({author, title, body, category}) {
-  return {
-    type: ADD_POST,
-    author,
+
+export function addPost({author, title, body, category, onDispatched}) {
+  const payload = {
+    id: uuid(),
     title,
+    author,
     body,
-    category
- };
+    category,
+    timestamp: Date.now()
+  };
+
+  return (dispatch, getState) => {
+    request(`/posts`, payload, 'POST')
+      .then(resp => resp.json())
+      .then(data => {
+        dispatch({
+          type: ADD_POST,
+          ...data
+        });
+
+        history.push(`/${data.category}/${data.id}`);
+      });
+  };
 }
 
-export function editPost({id, author, title, body, category}) {
-  return {
-    type: EDIT_POST,
+export function editPost({id, title, body}) {
+  const payload = {
     id,
-    author,
     title,
-    body,
-    category
- };
+    body
+  };
+
+  return dispatch => {
+    request(`/posts/${id}`, payload, 'PUT')
+      .then(resp => resp.json())
+      .then(data => {
+        dispatch({
+          type: EDIT_POST,
+          ...data
+        });
+      });
+  };
 }
 
 export function deletePost(id) {
-  return {
-    type: DELETE_POST,
-    id
- };
+  return dispatch => {
+    request(`/posts/${id}`, null, 'DELETE')
+      .then(resp => resp.json())
+      .then(data => {
+        dispatch({
+          type: EDIT_POST,
+          ...data
+        });
+
+        history.push(`/${data.category}`);
+      });
+  };
 }
 
 
@@ -61,7 +93,7 @@ export function updatePosts(posts=[]) {
   return {
     type: UPDATE_POSTS,
     posts
- };
+  };
 }
 
 export function fetchPosts() {
@@ -73,3 +105,4 @@ export function fetchPosts() {
    });
  };
 }
+

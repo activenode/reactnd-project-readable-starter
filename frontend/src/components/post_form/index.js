@@ -4,9 +4,6 @@ import {Modal, Form, Button} from 'semantic-ui-react';
 const notLocked = true;
 const isOpen = true;
 
-//TODO: make sure that redux will not provide editable
-
-
 class PostForm extends Component {
   //local state?
   state = {
@@ -21,16 +18,22 @@ class PostForm extends Component {
   };
 
   setStateToGivenPropState = () => {
-    const {
-      presetPostData: post
-    } = this.props;
+    const {presetPostData: post} = this.props;
+    const currentFormData = this.state.currentFormData;
 
     if (!post.title) {
+      this.setState({
+        currentFormData: {
+          ...currentFormData,
+          category: post.category
+        }
+      });
       return; //to avoid setting "undefined" values and getting "uncontrolled" error
     }
 
     this.setState({
       currentFormData: {
+        ...currentFormData,
         author: post.author,
         title: post.title,
         body: post.body,
@@ -41,6 +44,7 @@ class PostForm extends Component {
   }
 
   componentWillMount() {
+    this.setState({isLoading: false});
     this.setStateToGivenPropState();
   }
 
@@ -74,17 +78,26 @@ class PostForm extends Component {
    * Will validate some data and then execute the provided function with the form data as param
    * @param {Function} funcToExecuteWithData
    */
-  validateAndExecute(funcToExecuteWithData) {
+  validateAndExecute(isEdit, funcToExecuteWithData) {
     /**
      * ok so assuming everything worked then we need to check the category
      * as this is not automatically checked
      */
-    if (!this.state.currentFormData.category) {
+    if (!this.state.currentFormData.category
+      || !this.props.categories.includes(this.state.currentFormData.category)) {
       this.setState({
         categoryErrorneous: true
       });
     } else if (funcToExecuteWithData) {
+      if (!isEdit) {
+        this.setState({isLoading: true});
+      }
+
       funcToExecuteWithData(this.state.currentFormData);
+
+      if (isEdit) {
+        this.props.onClose();
+      }
     }
   }
 
@@ -94,7 +107,8 @@ class PostForm extends Component {
       categories,
       onSave,
       onClose
-   } = this.props;
+    } = this.props;
+    const isEdit = this.props.presetPostData.title ? true : false;
 
     return (
       <Modal
@@ -103,11 +117,12 @@ class PostForm extends Component {
         open={isOpen}>
         <Modal.Header>{headerTitle}</Modal.Header>
         <Modal.Content>
-          <Form loading={this.state.isLoading} onSubmit={() => this.validateAndExecute(onSave)}>
+          <Form loading={this.state.isLoading} onSubmit={() => this.validateAndExecute(isEdit, onSave)}>
             <Form.Input
               onChange={this.handleFormFieldChange}
               label='Author'
               placeholder='Your name'
+              disabled={isEdit}
               name='author'
               required
               value={this.state.currentFormData.author} />
@@ -131,6 +146,7 @@ class PostForm extends Component {
               label='Category'
               name='category'
               required
+              disabled={isEdit}
               value={this.state.currentFormData.category}
               error={this.state.categoryErrorneous} />
 

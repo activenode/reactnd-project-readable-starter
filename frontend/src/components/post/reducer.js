@@ -1,4 +1,8 @@
-import {ADD_POST, EDIT_POST, DELETE_POST, UPDATE_POSTS} from './actions';
+import {
+  ADD_POST,
+  EDIT_POST,
+  UPDATE_POSTS
+} from './actions';
 import {INCREMENT_COMMENTS, DECREMENT_COMMENTS} from '../comment_section/actions';
 import removeActionType from '../../utils/removeActionType';
 
@@ -23,6 +27,8 @@ function postsReducer(state = [], action) {
   switch (action.type) {
     case UPDATE_POSTS:
       return action.posts;
+    case ADD_POST:
+      return state.concat([payload]);
     case INCREMENT_COMMENTS:
       return state.map(post => {
         if (post.id === action.postId) {

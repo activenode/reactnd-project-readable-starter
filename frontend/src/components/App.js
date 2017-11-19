@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import 'semantic-ui-css/semantic.min.css';
 import '../index.css';
-import {BrowserRouter, Route} from 'react-router-dom';
+import {Router, Route} from 'react-router-dom';
+import history from '../utils/history';
 import PostNavigator from './post_navigator';
 import ListPosts from './list_posts';
 import PostsOrderBar from './posts_order_bar';
 import PostForm from './post_form';
-//import {HOUR_DURATION_MS} from '../utils/time';
 import {connect} from 'react-redux'
 import {fetchCategories} from './categories/actions';
 import {
@@ -75,10 +75,7 @@ class App extends Component {
     orderPostsBy: postOrderDefaultValue
   }
 
-  getDetailViewLinkForPost({
-    category,
-    id
-  }) {
+  getDetailViewLinkForPost({category, id}) {
     return `/${category}/${id}`;
   }
 
@@ -97,7 +94,7 @@ class App extends Component {
 
   render() {
     return (
-      <BrowserRouter>
+      <Router history={history}>
         <Route
           path={'/:category?/:id?/:optionParam?'}
           render={(props) => {
@@ -160,28 +157,28 @@ class App extends Component {
                       headerTitle={newPostRequested ? 'New post' : 'Edit post'}
                       categories={this.props.categories}
                       presetPostData={fetchPostData({posts: this.props.posts, id, category, newPostRequested})}
-                      onSave={this.props.savePost}
+                      onSave={data => {
+                        this.props.savePost({
+                          ...data
+                        });
+                      }}
                       onClose={()=>{
                         // hint: we are in edit_post or new_post
                         // so basically removing these parts should be sufficient
                         history.push(pathname.replace(/\/(new|edit)_post/g,''));
-                     }}
-                      />
+                      }}
+                    />
                }
               </div>
               )
          }} />
-      </BrowserRouter>
+      </Router>
     );
- }
+  }
 }
 
 
-function mapStateToProps({
-  categories,
-  posts,
-  comments
-}) {
+function mapStateToProps({categories, posts, comments}) {
   // categories Array<String>
   // posts Array<Post>
   // comments Array<Comment>
